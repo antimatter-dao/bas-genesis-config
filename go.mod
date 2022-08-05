@@ -1,4 +1,4 @@
-module github.com/Ankr-network/bas-genesis-config
+module github.com/antimatter-dao/bas-genesis-config
 
 go 1.16
 
