@@ -13,7 +13,8 @@ contract FakeSlashingIndicator is SlashingIndicator {
         IGovernance governanceContract,
         IChainConfig chainConfigContract,
         IRuntimeUpgrade runtimeUpgradeContract,
-        IDeployerProxy deployerProxyContract
+        IDeployerProxy deployerProxyContract,
+        IVault vaultContract
     ) SlashingIndicator(
         stakingContract,
         slashingIndicatorContract,
@@ -22,7 +23,8 @@ contract FakeSlashingIndicator is SlashingIndicator {
         governanceContract,
         chainConfigContract,
         runtimeUpgradeContract,
-        deployerProxyContract
+        deployerProxyContract,
+        vaultContract
     ) {
     }
 

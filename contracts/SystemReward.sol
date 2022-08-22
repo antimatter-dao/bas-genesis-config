@@ -45,7 +45,8 @@ contract SystemReward is ISystemReward, InjectorContextHolder {
         IGovernance governanceContract,
         IChainConfig chainConfigContract,
         IRuntimeUpgrade runtimeUpgradeContract,
-        IDeployerProxy deployerProxyContract
+        IDeployerProxy deployerProxyContract,
+        IVault vaultContract
     ) InjectorContextHolder(
         stakingContract,
         slashingIndicatorContract,
@@ -54,7 +55,8 @@ contract SystemReward is ISystemReward, InjectorContextHolder {
         governanceContract,
         chainConfigContract,
         runtimeUpgradeContract,
-        deployerProxyContract
+        deployerProxyContract,
+        vaultContract
     ) {
     }
 

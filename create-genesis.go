@@ -91,6 +91,7 @@ var governanceAddress = common.HexToAddress("0x000000000000000000000000000000000
 var chainConfigAddress = common.HexToAddress("0x0000000000000000000000000000000000007003")
 var runtimeUpgradeAddress = common.HexToAddress("0x0000000000000000000000000000000000007004")
 var deployerProxyAddress = common.HexToAddress("0x0000000000000000000000000000000000007005")
+var vaultAddress = common.HexToAddress("0x0000000000000000000000000000000000007006")
 var intermediarySystemAddress = common.HexToAddress("0xfffffffffffffffffffffffffffffffffffffffe")
 
 //go:embed build/contracts/RuntimeProxy.json
@@ -119,6 +120,9 @@ var runtimeUpgradeRawArtifact []byte
 
 //go:embed build/contracts/DeployerProxy.json
 var deployerProxyRawArtifact []byte
+
+//go:embed build/contracts/Vault.json
+var vaultRawArtifact []byte
 
 func newArguments(typeNames ...string) abi.Arguments {
 	var args abi.Arguments
@@ -192,8 +196,8 @@ func createInitializer(typeNames []string, params []interface{}) []byte {
 
 func createSimpleBytecode(rawArtifact []byte) []byte {
 	constructorArgs, err := newArguments(
-		"address", "address", "address", "address", "address", "address", "address", "address").Pack(
-		stakingAddress, slashingIndicatorAddress, systemRewardAddress, stakingPoolAddress, governanceAddress, chainConfigAddress, runtimeUpgradeAddress, deployerProxyAddress)
+		"address", "address", "address", "address", "address", "address", "address", "address", "address").Pack(
+		stakingAddress, slashingIndicatorAddress, systemRewardAddress, stakingPoolAddress, governanceAddress, chainConfigAddress, runtimeUpgradeAddress, deployerProxyAddress, vaultAddress)
 	if err != nil {
 		panic(err)
 	}
@@ -202,8 +206,8 @@ func createSimpleBytecode(rawArtifact []byte) []byte {
 
 func createProxyBytecodeWithConstructor(rawArtifact []byte, initTypes []string, initArgs []interface{}) []byte {
 	constructorArgs, err := newArguments(
-		"address", "address", "address", "address", "address", "address", "address", "address").Pack(
-		stakingAddress, slashingIndicatorAddress, systemRewardAddress, stakingPoolAddress, governanceAddress, chainConfigAddress, runtimeUpgradeAddress, deployerProxyAddress)
+		"address", "address", "address", "address", "address", "address", "address", "address", "address").Pack(
+		stakingAddress, slashingIndicatorAddress, systemRewardAddress, stakingPoolAddress, governanceAddress, chainConfigAddress, runtimeUpgradeAddress, deployerProxyAddress, vaultAddress)
 	if err != nil {
 		panic(err)
 	}
@@ -333,6 +337,7 @@ func createGenesisConfig(config genesisConfig, targetFile string) ([]byte, error
 	invokeConstructorOrPanic(genesis, deployerProxyAddress, deployerProxyRawArtifact, []string{"address[]"}, []interface{}{
 		config.Deployers,
 	}, nil)
+	invokeConstructorOrPanic(genesis, vaultAddress, vaultRawArtifact, []string{}, []interface{}{}, nil)
 	// create system contract
 	genesis.Alloc[intermediarySystemAddress] = core.GenesisAccount{
 		Balance: big.NewInt(0),

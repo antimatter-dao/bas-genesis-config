@@ -13,7 +13,8 @@ contract FakeStakingPool is StakingPool {
         IGovernance governanceContract,
         IChainConfig chainConfigContract,
         IRuntimeUpgrade runtimeUpgradeContract,
-        IDeployerProxy deployerProxyContract
+        IDeployerProxy deployerProxyContract,
+        IVault vaultContract
     ) StakingPool(
         stakingContract,
         slashingIndicatorContract,
@@ -22,7 +23,8 @@ contract FakeStakingPool is StakingPool {
         governanceContract,
         chainConfigContract,
         runtimeUpgradeContract,
-        deployerProxyContract
+        deployerProxyContract,
+        vaultContract
     ) {
     }
 

@@ -13,7 +13,8 @@ contract FakeDeployerProxy is DeployerProxy {
         IGovernance governanceContract,
         IChainConfig chainConfigContract,
         IRuntimeUpgrade runtimeUpgradeContract,
-        IDeployerProxy deployerProxyContract
+        IDeployerProxy deployerProxyContract,
+        IVault vaultContract
     ) DeployerProxy(
         stakingContract,
         slashingIndicatorContract,
@@ -22,7 +23,8 @@ contract FakeDeployerProxy is DeployerProxy {
         governanceContract,
         chainConfigContract,
         runtimeUpgradeContract,
-        deployerProxyContract
+        deployerProxyContract,
+        vaultContract
     ) {
     }
 

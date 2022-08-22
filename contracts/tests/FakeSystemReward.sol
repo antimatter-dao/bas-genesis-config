@@ -13,7 +13,8 @@ contract FakeSystemReward is SystemReward {
         IGovernance governanceContract,
         IChainConfig chainConfigContract,
         IRuntimeUpgrade runtimeUpgradeContract,
-        IDeployerProxy deployerProxyContract
+        IDeployerProxy deployerProxyContract,
+        IVault vaultContract
     ) SystemReward(
         stakingContract,
         slashingIndicatorContract,
@@ -22,7 +23,8 @@ contract FakeSystemReward is SystemReward {
         governanceContract,
         chainConfigContract,
         runtimeUpgradeContract,
-        deployerProxyContract
+        deployerProxyContract,
+        vaultContract
     ) {
     }
 
