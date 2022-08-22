@@ -35,7 +35,8 @@ contract ChainConfig is InjectorContextHolder, IChainConfig {
         IGovernance governanceContract,
         IChainConfig chainConfigContract,
         IRuntimeUpgrade runtimeUpgradeContract,
-        IDeployerProxy deployerProxyContract
+        IDeployerProxy deployerProxyContract,
+        IVault vaultContract
     ) InjectorContextHolder(
         stakingContract,
         slashingIndicatorContract,
@@ -44,7 +45,8 @@ contract ChainConfig is InjectorContextHolder, IChainConfig {
         governanceContract,
         chainConfigContract,
         runtimeUpgradeContract,
-        deployerProxyContract
+        deployerProxyContract,
+        vaultContract
     ) {
     }
 

@@ -13,7 +13,8 @@ contract FakeStaking is Staking {
         IGovernance governanceContract,
         IChainConfig chainConfigContract,
         IRuntimeUpgrade runtimeUpgradeContract,
-        IDeployerProxy deployerProxyContract
+        IDeployerProxy deployerProxyContract,
+        IVault vaultContract
     ) Staking(
         stakingContract,
         slashingIndicatorContract,
@@ -22,7 +23,8 @@ contract FakeStaking is Staking {
         governanceContract,
         chainConfigContract,
         runtimeUpgradeContract,
-        deployerProxyContract
+        deployerProxyContract,
+        vaultContract
     ) {
     }
 

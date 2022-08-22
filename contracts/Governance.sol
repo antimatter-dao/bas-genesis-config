@@ -18,7 +18,8 @@ contract Governance is InjectorContextHolder, GovernorCountingSimpleUpgradeable,
         IGovernance governanceContract,
         IChainConfig chainConfigContract,
         IRuntimeUpgrade runtimeUpgradeContract,
-        IDeployerProxy deployerProxyContract
+        IDeployerProxy deployerProxyContract,
+        IVault vaultContract
     ) InjectorContextHolder(
         stakingContract,
         slashingIndicatorContract,
@@ -27,7 +28,8 @@ contract Governance is InjectorContextHolder, GovernorCountingSimpleUpgradeable,
         governanceContract,
         chainConfigContract,
         runtimeUpgradeContract,
-        deployerProxyContract
+        deployerProxyContract,
+        vaultContract
     ) {
     }
 

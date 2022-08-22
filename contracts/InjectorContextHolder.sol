@@ -16,6 +16,7 @@ import "./interfaces/IRuntimeUpgrade.sol";
 import "./interfaces/IStakingPool.sol";
 import "./interfaces/IInjectorContextHolder.sol";
 import "./interfaces/IDeployerProxy.sol";
+import "./interfaces/IVault.sol";
 
 abstract contract InjectorContextHolder is Initializable, Multicall, IInjectorContextHolder {
 
@@ -32,6 +33,7 @@ abstract contract InjectorContextHolder is Initializable, Multicall, IInjectorCo
     IChainConfig internal immutable _CHAIN_CONFIG_CONTRACT;
     IRuntimeUpgrade internal immutable _RUNTIME_UPGRADE_CONTRACT;
     IDeployerProxy internal immutable _DEPLOYER_PROXY_CONTRACT;
+    IVault internal immutable _VAULT_CONTRACT;
 
     // delayed initializer input data (only for parlia mode)
     bytes internal _delayedInitializer;
@@ -54,7 +56,8 @@ abstract contract InjectorContextHolder is Initializable, Multicall, IInjectorCo
         IGovernance governanceContract,
         IChainConfig chainConfigContract,
         IRuntimeUpgrade runtimeUpgradeContract,
-        IDeployerProxy deployerProxyContract
+        IDeployerProxy deployerProxyContract,
+        IVault vaultContract
     ) {
         _STAKING_CONTRACT = stakingContract;
         _SLASHING_INDICATOR_CONTRACT = slashingIndicatorContract;
@@ -64,6 +67,7 @@ abstract contract InjectorContextHolder is Initializable, Multicall, IInjectorCo
         _CHAIN_CONFIG_CONTRACT = chainConfigContract;
         _RUNTIME_UPGRADE_CONTRACT = runtimeUpgradeContract;
         _DEPLOYER_PROXY_CONTRACT = deployerProxyContract;
+        _VAULT_CONTRACT = vaultContract;
     }
 
     function useDelayedInitializer(bytes memory delayedInitializer) external onlyBlock(0) {

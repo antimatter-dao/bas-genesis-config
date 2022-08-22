@@ -27,7 +27,8 @@ contract RuntimeUpgrade is InjectorContextHolder, IRuntimeUpgrade {
         IGovernance governanceContract,
         IChainConfig chainConfigContract,
         IRuntimeUpgrade runtimeUpgradeContract,
-        IDeployerProxy deployerProxyContract
+        IDeployerProxy deployerProxyContract,
+        IVault vaultContract
     ) InjectorContextHolder(
         stakingContract,
         slashingIndicatorContract,
@@ -36,7 +37,8 @@ contract RuntimeUpgrade is InjectorContextHolder, IRuntimeUpgrade {
         governanceContract,
         chainConfigContract,
         runtimeUpgradeContract,
-        deployerProxyContract
+        deployerProxyContract,
+        vaultContract
     ) {
     }
 

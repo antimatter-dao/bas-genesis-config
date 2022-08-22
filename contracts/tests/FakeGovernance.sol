@@ -13,7 +13,8 @@ contract FakeGovernance is Governance {
         IGovernance governanceContract,
         IChainConfig chainConfigContract,
         IRuntimeUpgrade runtimeUpgradeContract,
-        IDeployerProxy deployerProxyContract
+        IDeployerProxy deployerProxyContract,
+        IVault vaultContract
     ) Governance(
         stakingContract,
         slashingIndicatorContract,
@@ -22,7 +23,8 @@ contract FakeGovernance is Governance {
         governanceContract,
         chainConfigContract,
         runtimeUpgradeContract,
-        deployerProxyContract
+        deployerProxyContract,
+        vaultContract
     ) {
     }
 

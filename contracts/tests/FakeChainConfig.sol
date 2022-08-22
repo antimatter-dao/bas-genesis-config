@@ -13,7 +13,8 @@ contract FakeChainConfig is ChainConfig {
         IGovernance governanceContract,
         IChainConfig chainConfigContract,
         IRuntimeUpgrade runtimeUpgradeContract,
-        IDeployerProxy deployerProxyContract
+        IDeployerProxy deployerProxyContract,
+        IVault vaultContract
     ) ChainConfig(
         stakingContract,
         slashingIndicatorContract,
@@ -22,7 +23,8 @@ contract FakeChainConfig is ChainConfig {
         governanceContract,
         chainConfigContract,
         runtimeUpgradeContract,
-        deployerProxyContract
+        deployerProxyContract,
+        vaultContract
     ) {
     }
 

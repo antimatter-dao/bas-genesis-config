@@ -13,7 +13,8 @@ contract FakeRuntimeUpgrade is RuntimeUpgrade {
         IGovernance governanceContract,
         IChainConfig chainConfigContract,
         IRuntimeUpgrade runtimeUpgradeContract,
-        IDeployerProxy deployerProxyContract
+        IDeployerProxy deployerProxyContract,
+        IVault vaultContract
     ) RuntimeUpgrade(
         stakingContract,
         slashingIndicatorContract,
@@ -22,7 +23,8 @@ contract FakeRuntimeUpgrade is RuntimeUpgrade {
         governanceContract,
         chainConfigContract,
         runtimeUpgradeContract,
-        deployerProxyContract
+        deployerProxyContract,
+        vaultContract
     ) {
     }
 
