@@ -8,11 +8,11 @@ import "./InjectorContextHolder.sol";
 contract Vault is InjectorContextHolder, OwnableUpgradeable, PausableUpgradeable {
     uint256 public totalSupply;
     uint256 public minimumThreshold;
-    mapping (address => bool) celer;
+    mapping (address => bool) bridges;
 
     event Transfer(address indexed from, address indexed to, uint256 value);
-    event CelerAdded(address indexed sender, address indexed account);
-    event CelerDeleted(address indexed sender, address indexed account);
+    event BridgeAdded(address indexed sender, address indexed account);
+    event BridgeDeleted(address indexed sender, address indexed account);
     event MinimumThresholdSet(address indexed sender, uint256 indexed old, uint256 indexed value);
 
     constructor(
@@ -43,7 +43,7 @@ contract Vault is InjectorContextHolder, OwnableUpgradeable, PausableUpgradeable
         __Pausable_init();
     }
 
-    function mint(address to, uint256 amount) public whenNotPaused onlyCeler {
+    function mint(address to, uint256 amount) public whenNotPaused onlyBridge {
         totalSupply += amount;
         emit Transfer(address(0), to, amount);
     }
@@ -54,16 +54,16 @@ contract Vault is InjectorContextHolder, OwnableUpgradeable, PausableUpgradeable
         emit Transfer(msg.sender, address(0), msg.value);
     }
 
-    function addCeler(address account) public onlyFromGovernance {
-        require(!celer[account], "Forbid");
-        celer[account] = true;
-        emit CelerAdded(msg.sender, account);
+    function addBridge(address account) public onlyFromGovernance {
+        require(!bridges[account], "Forbid");
+        bridges[account] = true;
+        emit BridgeAdded(msg.sender, account);
     }
 
-    function deleteCeler(address account) external onlyFromGovernance {
-        require(celer[account], "Forbid");
-        celer[account] = false;
-        emit CelerDeleted(msg.sender, account);
+    function deleteBridge(address account) external onlyFromGovernance {
+        require(bridges[account], "Forbid");
+        bridges[account] = false;
+        emit BridgeDeleted(msg.sender, account);
     }
 
     function setMinimumThreshold(uint256 value) external onlyFromGovernance {
@@ -72,8 +72,8 @@ contract Vault is InjectorContextHolder, OwnableUpgradeable, PausableUpgradeable
         emit MinimumThresholdSet(msg.sender, old, value);
     }
 
-    modifier onlyCeler() {
-        require(celer[msg.sender], "Only celer can call function");
+    modifier onlyBridge() {
+        require(bridges[msg.sender], "Only bridge can call function");
         _;
     }
 }
