@@ -48,7 +48,7 @@ contract Vault is InjectorContextHolder, OwnableUpgradeable, PausableUpgradeable
         emit Transfer(address(0), to, amount);
     }
 
-    function burn() public payable whenNotPaused {
+    function burn() public payable whenNotPaused onlyBridge {
         require(msg.value >= minimumThreshold, "Forbid");
         totalSupply -= msg.value;
         emit Transfer(msg.sender, address(0), msg.value);
