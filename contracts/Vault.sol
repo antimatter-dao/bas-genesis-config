@@ -73,7 +73,7 @@ contract Vault is InjectorContextHolder, OwnableUpgradeable, PausableUpgradeable
     }
 
     modifier onlyBridge() {
-        require(owner() == msg.sender || bridges[msg.sender], "Only owner or bridge can call function");
+        require(bridges[msg.sender], "Only bridge can call function");
         _;
     }
 }
