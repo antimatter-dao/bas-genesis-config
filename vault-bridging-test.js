@@ -157,11 +157,15 @@ const proposalStates = ['Pending', 'Active', 'Canceled', 'Defeated', 'Succeeded'
     const addBridgeTx = vault.methods.addBridge(bridgeAddr).encodeABI();
     console.log("addBridgeTx:", addBridgeTx);
     // encode tx to govenance proposal
+    let addresses = [VAULT_ADDRESS];
+    let values = ['0'];
+    let calls = [addBridgeTx];
+    let desc = `add bridge ${bridgeAddr}`;
     let governanceCall = governance.methods.proposeWithCustomVotingPeriod(
-      [VAULT_ADDRESS], 
-      ['0'], 
-      [addBridgeTx], 
-      `add bridge ${bridgeAddr}`, 
+      addresses, 
+      values, 
+      calls, 
+      desc, 
       '10').encodeABI();
     // sign proposal tx
     const {rawTransaction, transactionHash} = await signTx(someValidator, {
