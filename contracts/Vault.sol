@@ -8,7 +8,7 @@ import "./InjectorContextHolder.sol";
 contract Vault is InjectorContextHolder, OwnableUpgradeable, PausableUpgradeable {
     uint256 public totalSupply;
     uint256 public minimumThreshold;
-    mapping (address => bool) bridges;
+    mapping (address => bool) public bridges;
 
     event Transfer(address indexed from, address indexed to, uint256 value);
     event BridgeAdded(address indexed sender, address indexed account);
