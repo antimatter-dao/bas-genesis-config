@@ -1,10 +1,8 @@
-const Web3 = require('web3'),
-  fs = require('fs');
-const AbiCoder = require("web3-eth-abi");
+const Web3 = require('web3');
+const fs = require('fs');
 
 const ABI_STAKING = require('./build/contracts/Staking.json').abi;
 const ABI_GOVERNANCE = require('./build/contracts/Governance.json').abi;
-const ABI_RUNTIME_UPGRADE = require('./build/contracts/RuntimeUpgrade.json').abi;
 const ABI_VAULT = require('./build/contracts/Vault.json').abi;
 
 const askFor = async (question) => {
@@ -22,54 +20,11 @@ const askFor = async (question) => {
 };
 
 const STAKING_ADDRESS = '0x0000000000000000000000000000000000001000';
-const SLASHING_INDICATOR_ADDRESS = '0x0000000000000000000000000000000000001001';
-const SYSTEM_REWARD_ADDRESS = '0x0000000000000000000000000000000000001002';
-const STAKING_POOL_ADDRESS = '0x0000000000000000000000000000000000007001';
 const GOVERNANCE_ADDRESS = '0x0000000000000000000000000000000000007002';
-const CHAIN_CONFIG_ADDRESS = '0x0000000000000000000000000000000000007003';
-const RUNTIME_UPGRADE_ADDRESS = '0x0000000000000000000000000000000000007004';
-const DEPLOYER_PROXY_ADDRESS = '0x0000000000000000000000000000000000007005';
 const VAULT_ADDRESS = '0x0000000000000000000000000000000000007006';
-
-const ALL_ADDRESSES = [
-  STAKING_ADDRESS,
-  SLASHING_INDICATOR_ADDRESS,
-  SYSTEM_REWARD_ADDRESS,
-  STAKING_POOL_ADDRESS,
-  GOVERNANCE_ADDRESS,
-  CHAIN_CONFIG_ADDRESS,
-  RUNTIME_UPGRADE_ADDRESS,
-  DEPLOYER_PROXY_ADDRESS,
-  VAULT_ADDRESS,
-];
-
-const UPGRADABLE_ADDRESSES = ALL_ADDRESSES.filter(c => c !== RUNTIME_UPGRADE_ADDRESS);
-
-const readByteCodeForAddress = (address) => {
-  const artifactPaths = {
-    [STAKING_ADDRESS]: './build/contracts/Staking.json',
-    [SLASHING_INDICATOR_ADDRESS]: './build/contracts/SlashingIndicator.json',
-    [SYSTEM_REWARD_ADDRESS]: './build/contracts/SystemReward.json',
-    [STAKING_POOL_ADDRESS]: './build/contracts/StakingPool.json',
-    [GOVERNANCE_ADDRESS]: './build/contracts/Governance.json',
-    [CHAIN_CONFIG_ADDRESS]: './build/contracts/ChainConfig.json',
-    [RUNTIME_UPGRADE_ADDRESS]: './build/contracts/RuntimeUpgrade.json',
-    [DEPLOYER_PROXY_ADDRESS]: './build/contracts/DeployerProxy.json',
-    [VAULT_ADDRESS]: './build/contracts/Vault.json',
-  }
-  const filePath = artifactPaths[address];
-  if (!filePath) throw new Error(`There is no artifact for the address: ${address}`);
-  const {bytecode} = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-  return bytecode;
-};
 
 const sleepFor = async ms => {
   return new Promise(resolve => setTimeout(resolve, ms));
-};
-
-const injectorBytecode = (bytecode) => {
-  const injectorArgs = AbiCoder.encodeParameters(['address', 'address', 'address', 'address', 'address', 'address', 'address', 'address',], ALL_ADDRESSES);
-  return bytecode + injectorArgs.substr(2);
 };
 
 const proposalStates = ['Pending', 'Active', 'Canceled', 'Defeated', 'Succeeded', 'Queued', 'Expired', 'Executed'];
@@ -100,7 +55,6 @@ const proposalStates = ['Pending', 'Active', 'Canceled', 'Defeated', 'Succeeded'
   }
   const staking = new web3.eth.Contract(ABI_STAKING, STAKING_ADDRESS);
   const governance = new web3.eth.Contract(ABI_GOVERNANCE, GOVERNANCE_ADDRESS);
-  const runtimeUpgrade = new web3.eth.Contract(ABI_RUNTIME_UPGRADE, RUNTIME_UPGRADE_ADDRESS);
   const vault = new web3.eth.Contract(ABI_VAULT, VAULT_ADDRESS);
   // make sure we have enough private keys
   const keystoreKeys = {}
@@ -166,7 +120,7 @@ const proposalStates = ['Pending', 'Active', 'Canceled', 'Defeated', 'Succeeded'
       values, 
       calls, 
       desc, 
-      '10').encodeABI();
+      '20').encodeABI();
     // sign proposal tx
     const {rawTransaction, transactionHash} = await signTx(someValidator, {
       to: GOVERNANCE_ADDRESS,
