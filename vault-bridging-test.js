@@ -2,7 +2,7 @@ const Web3 = require('web3'),
   fs = require('fs');
 const AbiCoder = require("web3-eth-abi");
 
-const ABI_STAKING = require('./build/contracts/Staking.json').abi
+const ABI_STAKING = require('./build/contracts/Staking.json').abi;
 const ABI_GOVERNANCE = require('./build/contracts/Governance.json').abi;
 const ABI_RUNTIME_UPGRADE = require('./build/contracts/RuntimeUpgrade.json').abi;
 const ABI_VAULT = require('./build/contracts/Vault.json').abi;
@@ -18,8 +18,8 @@ const askFor = async (question) => {
       resolve(value);
       rl.close();
     });
-  })
-}
+  });
+};
 
 const STAKING_ADDRESS = '0x0000000000000000000000000000000000001000';
 const SLASHING_INDICATOR_ADDRESS = '0x0000000000000000000000000000000000001001';
@@ -57,34 +57,34 @@ const readByteCodeForAddress = (address) => {
     [DEPLOYER_PROXY_ADDRESS]: './build/contracts/DeployerProxy.json',
     [VAULT_ADDRESS]: './build/contracts/Vault.json',
   }
-  const filePath = artifactPaths[address]
-  if (!filePath) throw new Error(`There is no artifact for the address: ${address}`)
-  const {bytecode} = JSON.parse(fs.readFileSync(filePath, 'utf8'))
-  return bytecode
-}
+  const filePath = artifactPaths[address];
+  if (!filePath) throw new Error(`There is no artifact for the address: ${address}`);
+  const {bytecode} = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+  return bytecode;
+};
 
 const sleepFor = async ms => {
-  return new Promise(resolve => setTimeout(resolve, ms))
-}
+  return new Promise(resolve => setTimeout(resolve, ms));
+};
 
 const injectorBytecode = (bytecode) => {
-  const injectorArgs = AbiCoder.encodeParameters(['address', 'address', 'address', 'address', 'address', 'address', 'address', 'address',], ALL_ADDRESSES)
-  return bytecode + injectorArgs.substr(2)
-}
+  const injectorArgs = AbiCoder.encodeParameters(['address', 'address', 'address', 'address', 'address', 'address', 'address', 'address',], ALL_ADDRESSES);
+  return bytecode + injectorArgs.substr(2);
+};
 
 const proposalStates = ['Pending', 'Active', 'Canceled', 'Defeated', 'Succeeded', 'Queued', 'Expired', 'Executed'];
 
 (async () => {
   const rpcUrl = process.argv[2];
   if (!rpcUrl) {
-    console.error(`Specify RPC url`)
+    console.error(`Specify RPC url`);
     process.exit(1);
   }
-  // auto upgrade all contracts
+  // instance
   const web3 = new Web3(rpcUrl);
   const signTx = async (account, {to, data, value}) => {
     const nonce = await web3.eth.getTransactionCount(account.address),
-      chainId = await web3.eth.getChainId()
+      chainId = await web3.eth.getChainId();
     const txOpts = {
       from: account.address,
       gas: 2_000_000,
@@ -107,7 +107,9 @@ const proposalStates = ['Pending', 'Active', 'Canceled', 'Defeated', 'Succeeded'
   const keystorePassword = fs.readFileSync('./password.txt', 'utf8')
   console.log(`Decrypting keystore`);
   for (const filePath of fs.readdirSync('./keystore', 'utf8')) {
-    const [address] = filePath.match(/([\da-f]{40})/ig);
+    if (!filePath) { continue; }
+    const [address] = filePath.match(/([\da-f]{40})/ig) || [];
+    if (!address) { continue; }
     console.log(` ~ decrypting account 0x${address}`);
     keystoreKeys[`0x${address}`.toLowerCase()] = web3.eth.accounts.decrypt(JSON.parse(fs.readFileSync(`./keystore/${filePath}`, 'utf8')), keystorePassword);
   }
@@ -153,13 +155,14 @@ const proposalStates = ['Pending', 'Active', 'Canceled', 'Defeated', 'Succeeded'
   const upgradeVaultAddBridge = async (bridgeAddr) => {
     // encode add bridge tx
     const addBridgeTx = vault.methods.addBridge(bridgeAddr).encodeABI();
+    console.log("addBridgeTx:", addBridgeTx);
     // encode tx to govenance proposal
     let governanceCall = governance.methods.proposeWithCustomVotingPeriod(
       [VAULT_ADDRESS], 
-      '0', 
+      ['0'], 
       [addBridgeTx], 
       `add bridge ${bridgeAddr}`, 
-      '20').encodeABI();
+      '10').encodeABI();
     // sign proposal tx
     const {rawTransaction, transactionHash} = await signTx(someValidator, {
       to: GOVERNANCE_ADDRESS,
@@ -239,11 +242,11 @@ const proposalStates = ['Pending', 'Active', 'Canceled', 'Defeated', 'Succeeded'
     }
   }
 
-  let bridgeAddr = askFor('Adding bridge address: ');
+  let bridgeAddr = await askFor('Adding bridge address: ');
   if (!bridgeAddr) {
     throw new Error(`Empty bridge address`);
   }
   
   // create new runtime upgrade proposal
-  await upgradeVaultAddBridge(bridgeAddr)
+  await upgradeVaultAddBridge(bridgeAddr);
 })();
