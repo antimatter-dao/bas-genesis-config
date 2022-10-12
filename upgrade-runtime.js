@@ -28,6 +28,7 @@ const GOVERNANCE_ADDRESS = '0x0000000000000000000000000000000000007002';
 const CHAIN_CONFIG_ADDRESS = '0x0000000000000000000000000000000000007003';
 const RUNTIME_UPGRADE_ADDRESS = '0x0000000000000000000000000000000000007004';
 const DEPLOYER_PROXY_ADDRESS = '0x0000000000000000000000000000000000007005';
+const VAULT_ADDRESS = '0x0000000000000000000000000000000000007006'
 
 const ALL_ADDRESSES = [
   STAKING_ADDRESS,
@@ -38,6 +39,7 @@ const ALL_ADDRESSES = [
   CHAIN_CONFIG_ADDRESS,
   RUNTIME_UPGRADE_ADDRESS,
   DEPLOYER_PROXY_ADDRESS,
+  VAULT_ADDRESS,
 ];
 
 const UPGRADABLE_ADDRESSES = ALL_ADDRESSES.filter(c => c !== RUNTIME_UPGRADE_ADDRESS);
@@ -52,6 +54,7 @@ const readByteCodeForAddress = (address) => {
     [CHAIN_CONFIG_ADDRESS]: './build/contracts/ChainConfig.json',
     [RUNTIME_UPGRADE_ADDRESS]: './build/contracts/RuntimeUpgrade.json',
     [DEPLOYER_PROXY_ADDRESS]: './build/contracts/DeployerProxy.json',
+    [VAULT_ADDRESS]: './build/contracts/Vault.json',
   }
   const filePath = artifactPaths[address]
   if (!filePath) throw new Error(`There is no artifact for the address: ${address}`)
@@ -64,7 +67,7 @@ const sleepFor = async ms => {
 }
 
 const injectorBytecode = (bytecode) => {
-  const injectorArgs = AbiCoder.encodeParameters(['address', 'address', 'address', 'address', 'address', 'address', 'address', 'address',], ALL_ADDRESSES)
+  const injectorArgs = AbiCoder.encodeParameters(['address', 'address', 'address', 'address', 'address', 'address', 'address', 'address', 'address'], ALL_ADDRESSES)
   return bytecode + injectorArgs.substr(2)
 }
 

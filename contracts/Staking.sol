@@ -575,7 +575,7 @@ contract Staking is InjectorContextHolder, IStaking {
         _validatorSnapshots[validatorAddress][sinceEpoch] = ValidatorSnapshot(0, uint112(initialStake / BALANCE_COMPACT_PRECISION), 0, commissionRate);
         // delegate initial stake to validator owner
         ValidatorDelegation storage delegation = _validatorDelegations[validatorAddress][validatorOwner];
-        require(delegation.delegateQueue.length == 0);
+        require(delegation.delegateQueue.length == 0, "has delegations");
         delegation.delegateQueue.push(DelegationOpDelegate(uint112(initialStake / BALANCE_COMPACT_PRECISION), sinceEpoch));
         emit Delegated(validatorAddress, validatorOwner, initialStake, sinceEpoch);
         // emit event
