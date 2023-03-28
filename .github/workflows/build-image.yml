@@ -1,0 +1,92 @@
+name: Build devel docker image
+
+on:
+  push:
+    branches:
+      - devel
+
+  pull_request:
+    types:
+      - closed
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build-devel-images:
+    if: github.event_name == 'push' || (github.event.pull_request.merged == true && github.base_ref == 'refs/heads/devel')
+    runs-on: ubuntu-22.04
+    env:
+      HAVE_AUTO_DELETE_OLD_VERSION_PAT: ${{ secrets.AUTO_DELETE_OLD_VERSION_PAT != '' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          flavor: |
+            latest=true
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          file: Dockerfile
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      # https://github.com/orgs/community/discussions/26716
+      - name: Delete Old Package Versions (organization)
+        uses: actions/github-script@v6
+        if: ${{ env.HAVE_AUTO_DELETE_OLD_VERSION_PAT == 'true' }}
+        continue-on-error: true
+        with:
+          github-token: ${{ secrets.AUTO_DELETE_OLD_VERSION_PAT }}
+          script: |
+            const response = await github.request("GET /orgs/${{ github.repository_owner }}/packages/container/${{ env.PACKAGE_NAME }}/versions",
+              { per_page: ${{ env.PER_PAGE }}
+            });
+            for(version of response.data) {
+                if (version.metadata.container.tags.length == 0) {
+                    console.log("delete " + version.id)
+                    const deleteResponse = await github.request("DELETE /orgs/${{ github.repository_owner }}/packages/container/${{ env.PACKAGE_NAME }}/versions/" + version.id, { });
+                    console.log("status " + deleteResponse.status)
+                }
+            }
+        env:
+          PACKAGE_NAME: "bas-genesis-config"
+          PER_PAGE: 99
+
+      # https://github.com/orgs/community/discussions/26716
+      - name: Delete Old Package Versions
+        uses: actions/github-script@v6
+        if: ${{ env.HAVE_AUTO_DELETE_OLD_VERSION_PAT == 'true' }}
+        continue-on-error: true
+        with:
+          github-token: ${{ secrets.AUTO_DELETE_OLD_VERSION_PAT }}
+          script: |
+            const response = await github.request("GET /user/packages/container/${{ env.PACKAGE_NAME }}/versions",
+              { per_page: ${{ env.PER_PAGE }}
+            });
+            for(version of response.data) {
+                if (version.metadata.container.tags.length == 0) {
+                    console.log("delete " + version.id)
+                    const deleteResponse = await github.request("DELETE /user/packages/container/${{ env.PACKAGE_NAME }}/versions/" + version.id, { });
+                    console.log("status " + deleteResponse.status)
+                }
+            }
+        env:
+          PACKAGE_NAME: "bas-genesis-config"
+          PER_PAGE: 99
